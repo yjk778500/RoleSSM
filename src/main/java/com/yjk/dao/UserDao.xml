@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yjk.dao.UserDao">
+
+	<!-- 登录 -->
+	<select id="loginUser" resultType="User">
+		select * from User where name=#{name} and password=#{password}
+	</select>
+
+	<!-- 查询所有信息 -->
+	<select id="allUser" resultType="User">
+		select * from User 
+	</select>
+	
+	<select id="mohuUser" resultType="User">
+		select * from User 
+		<if test="name !=null and name !=''">
+		where name like CONCAT('%',#{name},'%')
+		</if>
+		<if test="gender !=null and gender !=0">
+		and gender=#{gender}
+		</if>
+	</select>
+	<!-- 查询用户信息回显 -->
+	<select id="getUserid" resultType="User" parameterType="Integer">
+		select * from User where id=#{id}
+	</select>
+	<!-- 查询显示当前登录的菜单权限 -->
+	<select id="getidMenu" parameterType="Integer" resultType="Menu">
+	
+		SELECT m.* FROM menu m,user_menu um WHERE m.id=um.menu_id AND um.`user_id`=#{id}
+	</select>
+	<!-- 查询显示登录人的按钮 -->
+	<select id="getidButton" parameterType="Integer" resultType="Menu">
+		SELECT m.*FROM  menu m,user_menu um WHERE m.id=um.menu_id AND um.user_id=#{user_id} AND m.menu_parent=#{menu_parent}
+	</select>
+	<!-- 查询所有菜单信息 -->
+	<select id="getallmenu" resultType="Menu">
+		select * from menu
+	</select>
+	<!-- 删除权限 -->
+	<delete id="deleuserMenu" parameterType="Integer">
+	delete from user_menu where user_id=#{id}
+	</delete>
+	<!-- 添加权限 -->
+	<insert id="adduserMenu">
+		INSERT user_menu (user_id,menu_id) VALUES(#{id},#{ids})
+	</insert>
+	
+	<!-- 查询所有菜单信息 -->
+	<select id="getallrole" resultType="Role">
+		select * from role
+	</select>
+	
+	<!-- 查询所有一级菜单信息 -->
+	<select id="MenuOne" resultType="Menu">
+		select * from menu where menu_type=1
+	</select>
+	<!-- 查询所有二级菜单信息 -->
+	<select id="MenuTwo" resultType="Menu">
+		select * from menu where menu_type=2
+	</select>
+	<!-- 查询所有三级菜单信息 -->
+	<select id="MenuThree" resultType="Menu">
+		select * from menu where menu_type=3
+	</select>
+	<!-- 删除用户 -->
+	<delete id="delUser" parameterType="Integer">
+	 delete from user where id=#{ids}
+	</delete>
+	<!-- 添加用户 -->
+	<insert id="addUser"  >
+	INSERT INTO `rolessm`.`user`(`name`,`age`,`gender`, `address`,`password`)
+VALUES (#{name},#{age},#{gender},#{address},#{password});
+	</insert>
+	
+</mapper>
